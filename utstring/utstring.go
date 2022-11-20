@@ -2,6 +2,8 @@ package utstring
 
 import (
 	"math/rand"
+	"os"
+	"strings"
 	"time"
 )
 
@@ -14,4 +16,21 @@ func RandomString(n int) string {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	return string(b)
+}
+
+func GetEnv(key string, def ...string) string {
+	resp := os.Getenv(key)
+	if resp == "" {
+		return Chain(def...)
+	}
+	return resp
+}
+
+func Chain(str ...string) string {
+	for _, v := range str {
+		if strings.TrimSpace(v) != "" {
+			return v
+		}
+	}
+	return ""
 }
