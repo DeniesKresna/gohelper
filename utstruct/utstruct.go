@@ -1,6 +1,10 @@
 package utstruct
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"errors"
+	"reflect"
+)
 
 // sourceStruct: source of the struct
 //
@@ -48,4 +52,28 @@ func InjectStructValue[T any](sourceStruct interface{}, destinationStruct *T) er
 		return err
 	}
 	return nil
+}
+
+func ConvertToSliceMapInterface[T any](sourceStructs []T) (res []map[string]interface{}, err error) {
+	if reflect.TypeOf(sourceStructs).Kind() != reflect.Slice {
+		err = errors.New("Failed. Only Array to be converted")
+		return
+	}
+
+	if len(sourceStructs) <= 0 {
+		return
+	}
+
+	if reflect.ValueOf(sourceStructs[0]).Kind() != reflect.Struct {
+		err = errors.New("Failed. Only Slice of Struct to be converted")
+		return
+	}
+
+	dataJson, err := json.Marshal(sourceStructs)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(dataJson, &res)
+	return
 }
