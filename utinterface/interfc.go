@@ -16,6 +16,16 @@ func IsMapStringInterface(i interface{}) bool {
 	return ok
 }
 
+func IsPointerOfMapStringInterface(i interface{}) bool {
+	if !IsPointer(i) {
+		return false
+	}
+
+	reflectValue := reflect.ValueOf(i).Elem()
+
+	return IsMapStringInterface(reflectValue.Interface())
+}
+
 func IsSlice(i interface{}) bool {
 	return reflect.TypeOf(i).Kind() == reflect.Slice
 }
