@@ -1,6 +1,10 @@
 package utslice
 
-func CompareTwoSlice[T int | int64 | string | float32 | float64](sliceOne []T, sliceTwo []T) (union []T, originLeft []T, originRight []T) {
+type Common interface {
+	int | int64 | float32 | float64 | string
+}
+
+func CompareTwoSlice[T Common](sliceOne []T, sliceTwo []T) (union []T, originLeft []T, originRight []T) {
 	var slicePopulation = make(map[T]map[string]bool)
 
 	for _, so := range sliceOne {
@@ -55,5 +59,14 @@ func CompareTwoSlice[T int | int64 | string | float32 | float64](sliceOne []T, s
 		}
 	}
 
+	return
+}
+
+func IsExist[T Common](arr []T, o T) (res bool) {
+	for _, v := range arr {
+		if o == v {
+			return true
+		}
+	}
 	return
 }

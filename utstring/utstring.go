@@ -1,6 +1,7 @@
 package utstring
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"strings"
@@ -33,4 +34,15 @@ func Chain(str ...string) string {
 		}
 	}
 	return ""
+}
+
+func ConvertToString(obj interface{}, def string) (res string) {
+	switch v := obj.(type) {
+	case int, int64, int32, float64, float32, bool:
+		return fmt.Sprintf("%v", v)
+	case string:
+		return fmt.Sprintf("%v", v)
+	default:
+		return def
+	}
 }
