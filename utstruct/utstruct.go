@@ -77,3 +77,46 @@ func ConvertToSliceMapInterface[T any](sourceStructs []T) (res []map[string]inte
 	err = json.Unmarshal(dataJson, &res)
 	return
 }
+
+func CopyNestedStructValues(source interface{}, dest interface{}) {
+	sValue := reflect.ValueOf(source)
+	dValue := reflect.ValueOf(dest).Elem()
+
+	if sValue.Kind() != reflect.Struct || dValue.Kind() != reflect.Struct {
+		return
+	}
+
+	sType := sValue.Type()
+	dType := dValue.Type()
+
+	for i := 0; i < sType.NumField(); i++ {
+		sField := sType.Field(i)
+		sTag := sField.Tag.Get("json")
+		if sTag == "" {
+			continue
+		}
+
+		dField, ok := dType.FieldByName(sField.Name)
+		if !ok {
+			continue
+		}
+
+		dTag := dField.Tag.Get("json")
+		if dTag != sTag {
+			continue
+		}
+
+		sFieldValue := sValue.Field(i)
+		dFieldValue := dValue.FieldByName(dField.Name)
+
+		if !dFieldValue.CanSet() {
+			continue
+		}
+
+		if sFieldValue.Kind() == reflect.Struct && dFieldValue.Kind() == reflect.Struct {
+			CopyNestedStructValues(sFieldValue.Interface(), dFieldValue.Addr().Interface())
+		} else {
+			dFieldValue.Set(sFieldValue)
+		}
+	}
+}

@@ -2,14 +2,16 @@ package utlog
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 // obj: string to be print
 //
-// show blue texted log
 func Info(obj interface{}) {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	switch obj.(type) {
 	case string:
 		log.Info().Msg(obj.(string))
@@ -20,7 +22,6 @@ func Info(obj interface{}) {
 
 // format: string format that need to be print.
 //
-// show blue texted log
 func Infof(format string, a ...any) {
 	msg := fmt.Sprintf(format, a...)
 	log.Info().Msg(msg)
@@ -28,8 +29,8 @@ func Infof(format string, a ...any) {
 
 // obj: string to be print
 //
-// show yellow texted log
 func Warn(obj interface{}) {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	switch obj.(type) {
 	case string:
 		log.Warn().Msg(obj.(string))
@@ -40,7 +41,6 @@ func Warn(obj interface{}) {
 
 // format: string format that need to be print.
 //
-// show yellow texted log
 func Warnf(format string, a ...any) {
 	msg := fmt.Sprintf(format, a...)
 	log.Warn().Msg(msg)
@@ -50,6 +50,7 @@ func Warnf(format string, a ...any) {
 //
 // show red texted log
 func Error(obj interface{}) {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	switch obj.(type) {
 	case string:
 		log.Error().Msg(obj.(string))
